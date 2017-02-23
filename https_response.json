@@ -1,0 +1,357 @@
+lines 358090
+removeparents
+Expanding types
+Done expanding
+======================================
+HttpsRequest
+Return type:  { level: 1,
+  address: 'b8cae',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'b8a26',
+     abbrev: 123,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xcd221): HttpsRequest',
+     name: 'HttpsRequest',
+     byte_size: '1752',
+     decl_file: '12',
+     decl_line: '46',
+     sibling: '<0xb8c7c>' } }
+arg0 { level: 1,
+  address: 'b8cae',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'b8a26',
+     abbrev: 123,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xcd221): HttpsRequest',
+     name: 'HttpsRequest',
+     byte_size: '1752',
+     decl_file: '12',
+     decl_line: '46',
+     sibling: '<0xb8c7c>' } }
+arg1 { level: 1,
+  address: 'b8cb4',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'b8cba',
+     abbrev: 96,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb5e84): NetworkInterface',
+     name: 'NetworkInterface',
+     declaration: '1',
+     sibling: '<0xb8ce4>' } }
+arg2 { level: 1,
+  address: 'ae605',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'ae60b',
+     abbrev: 32,
+     tag: 'const_type',
+     type: 
+      { level: 1,
+        address: 'ae5da',
+        abbrev: 2,
+        tag: 'base_type',
+        byte_size: '1',
+        encoding: '8\t(unsigned char)',
+        fullName: '(indirect string, offset: 0x42e5c): char',
+        name: 'char' } } }
+arg3 { level: 1,
+  address: 'b6d32',
+  abbrev: 70,
+  tag: 'enumeration_type',
+  fullName: '(indirect string, offset: 0x8c0f8): http_method',
+  name: 'http_method',
+  byte_size: '1',
+  decl_file: '80',
+  decl_line: '207',
+  sibling: '<0xb6e05>' }
+arg4 { level: 1,
+  address: 'ae605',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'ae60b',
+     abbrev: 32,
+     tag: 'const_type',
+     type: 
+      { level: 1,
+        address: 'ae5da',
+        abbrev: 2,
+        tag: 'base_type',
+        byte_size: '1',
+        encoding: '8\t(unsigned char)',
+        fullName: '(indirect string, offset: 0x42e5c): char',
+        name: 'char' } } }
+arg5 { level: 2,
+  address: 'b359b',
+  abbrev: 80,
+  tag: 'class_type',
+  fullName: '(indirect string, offset: 0xd5228): Callback<void(char const*, unsigned int)>',
+  name: 'Callback<void(char const*, unsigned int)>',
+  byte_size: '16',
+  decl_file: '14',
+  decl_line: '1144',
+  sibling: '<0xb381e>' }
+
+
+
+======================================
+~HttpsRequest
+Return type:  { level: 1,
+  address: 'adf86',
+  abbrev: 12,
+  tag: 'pointer_type',
+  byte_size: '4' }
+arg0 { level: 1,
+  address: 'b8cae',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'b8a26',
+     abbrev: 123,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xcd221): HttpsRequest',
+     name: 'HttpsRequest',
+     byte_size: '1752',
+     decl_file: '12',
+     decl_line: '46',
+     sibling: '<0xb8c7c>' } }
+arg1 { level: 1,
+  address: 'ade82',
+  abbrev: 4,
+  tag: 'base_type',
+  byte_size: '4',
+  encoding: '5\t(signed)',
+  fullName: 'int',
+  name: 'int' }
+
+
+
+======================================
+send
+Return type:  { level: 1,
+  address: 'b7195',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'b6ee7',
+     abbrev: 43,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xd32ec): HttpResponse',
+     name: 'HttpResponse',
+     byte_size: '52',
+     decl_file: '6',
+     decl_line: '26',
+     sibling: '<0xb7195>' } }
+arg0 { level: 1,
+  address: 'b8cae',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'b8a26',
+     abbrev: 123,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xcd221): HttpsRequest',
+     name: 'HttpsRequest',
+     byte_size: '1752',
+     decl_file: '12',
+     decl_line: '46',
+     sibling: '<0xb8c7c>' } }
+arg1 { level: 1,
+  address: 'adf63',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: { level: 1, address: 'adf69', abbrev: 10, tag: 'const_type' } }
+arg2 { level: 1,
+  address: 'b3a1e',
+  abbrev: 3,
+  tag: 'typedef',
+  fullName: '(indirect string, offset: 0x87aec): nsapi_size_t',
+  name: 'nsapi_size_t',
+  decl_file: '58',
+  decl_line: '65',
+  type: 
+   { level: 1,
+     address: 'ade89',
+     abbrev: 2,
+     tag: 'base_type',
+     byte_size: '4',
+     encoding: '7\t(unsigned)',
+     fullName: '(indirect string, offset: 0xb170): unsigned int',
+     name: 'unsigned int' } }
+
+
+
+======================================
+close
+Return type: None
+arg0 { level: 1,
+  address: 'b8cae',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'b8a26',
+     abbrev: 123,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xcd221): HttpsRequest',
+     name: 'HttpsRequest',
+     byte_size: '1752',
+     decl_file: '12',
+     decl_line: '46',
+     sibling: '<0xb8c7c>' } }
+
+
+
+======================================
+set_header
+Return type: None
+arg0 { level: 1,
+  address: 'b8cae',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'b8a26',
+     abbrev: 123,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xcd221): HttpsRequest',
+     name: 'HttpsRequest',
+     byte_size: '1752',
+     decl_file: '12',
+     decl_line: '46',
+     sibling: '<0xb8c7c>' } }
+arg1 { level: 2,
+  address: 'b114a',
+  abbrev: 3,
+  tag: 'typedef',
+  fullName: '(indirect string, offset: 0xa3f3c): string',
+  name: 'string',
+  decl_file: '53',
+  decl_line: '62',
+  type: 
+   { level: 2,
+     address: 'aef0b',
+     abbrev: 43,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xce8db): basic_string<char, std::char_traits<char>, std::allocator<char> >',
+     name: 'basic_string<char, std::char_traits<char>, std::allocator<char> >',
+     byte_size: '4',
+     decl_file: '17',
+     decl_line: '112',
+     sibling: '<0xb05a4>' } }
+arg2 { level: 2,
+  address: 'b114a',
+  abbrev: 3,
+  tag: 'typedef',
+  fullName: '(indirect string, offset: 0xa3f3c): string',
+  name: 'string',
+  decl_file: '53',
+  decl_line: '62',
+  type: 
+   { level: 2,
+     address: 'aef0b',
+     abbrev: 43,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xce8db): basic_string<char, std::char_traits<char>, std::allocator<char> >',
+     name: 'basic_string<char, std::char_traits<char>, std::allocator<char> >',
+     byte_size: '4',
+     decl_file: '17',
+     decl_line: '112',
+     sibling: '<0xb05a4>' } }
+
+
+
+======================================
+get_error
+Return type:  { level: 1,
+  address: 'b3a13',
+  abbrev: 3,
+  tag: 'typedef',
+  fullName: '(indirect string, offset: 0x87f93): nsapi_error_t',
+  name: 'nsapi_error_t',
+  decl_file: '58',
+  decl_line: '61',
+  type: 
+   { level: 1,
+     address: 'ade82',
+     abbrev: 4,
+     tag: 'base_type',
+     byte_size: '4',
+     encoding: '5\t(signed)',
+     fullName: 'int',
+     name: 'int' } }
+arg0 { level: 1,
+  address: 'b8cae',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'b8a26',
+     abbrev: 123,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xcd221): HttpsRequest',
+     name: 'HttpsRequest',
+     byte_size: '1752',
+     decl_file: '12',
+     decl_line: '46',
+     sibling: '<0xb8c7c>' } }
+
+
+
+======================================
+set_debug
+Return type: None
+arg0 { level: 1,
+  address: 'b8cae',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 1,
+     address: 'b8a26',
+     abbrev: 123,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xcd221): HttpsRequest',
+     name: 'HttpsRequest',
+     byte_size: '1752',
+     decl_file: '12',
+     decl_line: '46',
+     sibling: '<0xb8c7c>' } }
+arg1 { level: 1,
+  address: 'b3917',
+  abbrev: 2,
+  tag: 'base_type',
+  byte_size: '1',
+  encoding: '2\t(boolean)',
+  fullName: '(indirect string, offset: 0x270c): bool',
+  name: 'bool' }
+
+
+
