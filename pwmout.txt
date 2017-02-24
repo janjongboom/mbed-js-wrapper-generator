@@ -1,0 +1,425 @@
+lines 295792
+removeparents
+Expanding types
+Done expanding
+======================================
+PwmOut
+Return type:  { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg1 { level: 1,
+  address: '947cb',
+  abbrev: 3,
+  tag: 'typedef',
+  fullName: '(indirect string, offset: 0x8d77f): PinName',
+  name: 'PinName',
+  decl_file: '68',
+  decl_line: '244',
+  type: 
+   { level: 1,
+     address: '9421c',
+     abbrev: 5,
+     tag: 'enumeration_type',
+     byte_size: '4',
+     decl_file: '68',
+     decl_line: '32',
+     linkage_name: '(indirect string, offset: 0x8d77e): 7PinName',
+     sibling: '<0x947cb>' } }
+
+
+
+======================================
+write
+Return type: None
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg1 { level: 1,
+  address: '9490d',
+  abbrev: 2,
+  tag: 'base_type',
+  byte_size: '4',
+  encoding: '4\t(float)',
+  fullName: '(indirect string, offset: 0x84f6f): float',
+  name: 'float' }
+
+
+
+======================================
+read
+Return type:  { level: 1,
+  address: '9490d',
+  abbrev: 2,
+  tag: 'base_type',
+  byte_size: '4',
+  encoding: '4\t(float)',
+  fullName: '(indirect string, offset: 0x84f6f): float',
+  name: 'float' }
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+
+
+
+======================================
+period
+Return type: None
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg1 { level: 1,
+  address: '9490d',
+  abbrev: 2,
+  tag: 'base_type',
+  byte_size: '4',
+  encoding: '4\t(float)',
+  fullName: '(indirect string, offset: 0x84f6f): float',
+  name: 'float' }
+
+
+
+======================================
+period_ms
+Return type: None
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg1 { level: 1,
+  address: '8d511',
+  abbrev: 4,
+  tag: 'base_type',
+  byte_size: '4',
+  encoding: '5\t(signed)',
+  fullName: 'int',
+  name: 'int' }
+
+
+
+======================================
+period_us
+Return type: None
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg1 { level: 1,
+  address: '8d511',
+  abbrev: 4,
+  tag: 'base_type',
+  byte_size: '4',
+  encoding: '5\t(signed)',
+  fullName: 'int',
+  name: 'int' }
+
+
+
+======================================
+pulsewidth
+Return type: None
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg1 { level: 1,
+  address: '9490d',
+  abbrev: 2,
+  tag: 'base_type',
+  byte_size: '4',
+  encoding: '4\t(float)',
+  fullName: '(indirect string, offset: 0x84f6f): float',
+  name: 'float' }
+
+
+
+======================================
+pulsewidth_ms
+Return type: None
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg1 { level: 1,
+  address: '8d511',
+  abbrev: 4,
+  tag: 'base_type',
+  byte_size: '4',
+  encoding: '5\t(signed)',
+  fullName: 'int',
+  name: 'int' }
+
+
+
+======================================
+pulsewidth_us
+Return type: None
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg1 { level: 1,
+  address: '8d511',
+  abbrev: 4,
+  tag: 'base_type',
+  byte_size: '4',
+  encoding: '5\t(signed)',
+  fullName: 'int',
+  name: 'int' }
+
+
+
+======================================
+operator=
+Return type:  { level: 1,
+  address: '949af',
+  abbrev: 104,
+  tag: 'reference_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg1 { level: 1,
+  address: '9490d',
+  abbrev: 2,
+  tag: 'base_type',
+  byte_size: '4',
+  encoding: '4\t(float)',
+  fullName: '(indirect string, offset: 0x84f6f): float',
+  name: 'float' }
+
+
+
+======================================
+operator=
+Return type:  { level: 1,
+  address: '949af',
+  abbrev: 104,
+  tag: 'reference_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+arg1 { level: 1,
+  address: '949af',
+  abbrev: 104,
+  tag: 'reference_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+
+
+
+======================================
+operator float
+Return type:  { level: 1,
+  address: '9490d',
+  abbrev: 2,
+  tag: 'base_type',
+  byte_size: '4',
+  encoding: '4\t(float)',
+  fullName: '(indirect string, offset: 0x84f6f): float',
+  name: 'float' }
+arg0 { level: 1,
+  address: '949a9',
+  abbrev: 7,
+  tag: 'pointer_type',
+  byte_size: '4',
+  type: 
+   { level: 2,
+     address: '92d3d',
+     abbrev: 42,
+     tag: 'class_type',
+     fullName: '(indirect string, offset: 0xb8e35): PwmOut',
+     name: 'PwmOut',
+     byte_size: '2',
+     decl_file: '3',
+     decl_line: '58',
+     sibling: '<0x92ecd>' } }
+
+
+
