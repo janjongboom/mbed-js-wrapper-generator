@@ -6,15 +6,19 @@ function getCppType(type) {
         case 'class_type':
             return type.name;
         case 'pointer_type':
-            if (type.type.tag === 'const_type') {
+            if (type.type && type.type.tag === 'const_type') {
                 if (type.type.type) {
                     return 'const ' + type.type.type.name + '*';
                 }
                 else {
-                    console.warn('const void* is not properly supported, as we cannot infer what is being passed in...');
+                    console.warn('const void* is not properly supported, as we cannot infer what is being passed in...', type);
                     return 'const void*';
                 }
             }
+            if (!type.type) {
+                return 'void*';
+            }
+
             return type.type.name + '*';
         default:
             console.warn('Unknown tag', type.tag, type);
@@ -34,13 +38,22 @@ function createMemberFunction(obj, fn, params, typeCheckString, castString, argS
 
         returnValues.push(`${cppType} result = native_ptr->${fn.name}(${argString});`);
 
+        if (cppType === 'string') {
+            debugger;
+        }
+
         function handleBaseType(type) {
             switch (type.name) {
                 case 'float':
+                case 'int':
+                case 'unsigned int':
                     returnValues.push(`return jerry_create_number(result);`);
                     break;
-                case 'int':
-                    returnValues.push(`return jerry_create_number(result);`);
+                case 'bool':
+                    returnValues.push(`return jerry_create_boolean(result);`);
+                    break;
+                case 'string':
+                    returnValues.push(`return jerry_create_string((const jerry_char_t*) result.c_str());`);
                     break;
                 default:
                     console.warn('Unknown return base_type', fn.type.name, fn.type);
@@ -49,7 +62,8 @@ function createMemberFunction(obj, fn, params, typeCheckString, castString, argS
         }
 
         function handlePointerType(type) {
-            return returnValues.push(`return mbed_js_wrap_native_object(result);`);
+            returnValues.push(`if (result == NULL) return jerry_create_undefined();`);
+            returnValues.push(`return mbed_js_wrap_native_object(result);`);
         }
 
         switch (fn.type.tag) {
@@ -65,6 +79,9 @@ function createMemberFunction(obj, fn, params, typeCheckString, castString, argS
                 }
                 else if (fn.type.type.tag === 'pointer_type') {
                     handlePointerType(fn.type.type);
+                }
+                else if (fn.type.name === 'string') {
+                    handleBaseType({ name: 'string' });
                 }
                 else {
                     console.warn('Unknown return typedef', fn.type.type.name, fn.type);
@@ -124,7 +141,7 @@ void NAME_FOR_CLASS_NATIVE_DESTRUCTOR(${obj.name})(const uintptr_t native_handle
 /**
  * mbed_js_wrap_native_object (turns a native ${obj.name} object into a JS object)
  */
-static jerry_value_t mbed_js_wrap_native_object(${obj.name}* ptr) {
+jerry_value_t mbed_js_wrap_native_object(${obj.name}* ptr) {
     uintptr_t native_ptr = (uintptr_t) ptr;
 
     jerry_value_t js_object = jerry_create_object();
@@ -239,7 +256,7 @@ function fnToString(obj, fn, allFns) {
                 casting.push(`jerry_size_t szArg${ix-1} = jerry_get_string_size(args[${ix-1}]);`);
                 casting.push(`jerry_char_t *sArg${ix-1} = (jerry_char_t*) calloc(szArg${ix-1} + 1, sizeof(jerry_char_t));`);
                 casting.push(`jerry_string_to_char_buffer(args[${ix-1}], sArg${ix-1}, szArg${ix-1});`);
-                casting.push(`string arg${ix-1}(sArg${ix-1});`);
+                casting.push(`string arg${ix-1}((const char*) sArg${ix-1});`);
             }
             else {
                 console.warn('Unknown class type', type.name, type);
@@ -282,8 +299,21 @@ function fnToString(obj, fn, allFns) {
                 handleTypedef(p.type.type);
                 break;
             case 'pointer_type':
-                checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ALWAYS(${obj.name}, ${fn.name}, ${ix-1}, object);`);
-                casting.push(`${cppType} arg${ix-1} = (${cppType}) jsmbed_wrap_get_native_handle(args[${ix-1}]);`);
+                if (cppType === 'const char*') {
+                    checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ALWAYS(${obj.name}, ${fn.name}, ${ix-1}, string);`);
+
+                    casting.push(`jerry_size_t szArg${ix-1} = jerry_get_string_size(args[${ix-1}]);`);
+                    casting.push(`jerry_char_t *sArg${ix-1} = (jerry_char_t*) calloc(szArg${ix-1} + 1, sizeof(jerry_char_t));`);
+                    casting.push(`jerry_string_to_char_buffer(args[${ix-1}], sArg${ix-1}, szArg${ix-1});`);
+                    casting.push(`${cppType} arg${ix-1} = (${cppType}) sArg${ix-1};`);
+                }
+                else {
+                    checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ALWAYS(${obj.name}, ${fn.name}, ${ix-1}, object);`);
+
+                    casting.push(`uintptr_t arg${ix-1}_native_handle;`);
+                    casting.push(`jerry_get_object_native_handle(args[${ix-1}], &arg${ix-1}_native_handle);`);
+                    casting.push(`${cppType} arg${ix-1} = (${cppType})arg${ix-1}_native_handle;`);
+                }
                 break;
             case 'enumeration_type':
                 handleEnumerationType(p.type);

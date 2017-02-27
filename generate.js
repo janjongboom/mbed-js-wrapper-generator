@@ -71,7 +71,10 @@ function createJsH(libraryName, className) {
 
 #include "jerryscript-mbed-library-registry/wrap_tools.h"
 
+// @todo: add a reference to the ${className} header here
+
 DECLARE_CLASS_CONSTRUCTOR(${className});
+jerry_value_t mbed_js_wrap_native_object(${className}* ptr);
 
 #endif // _JERRYSCRIPT_MBED_${upper}_H
 `;
@@ -85,13 +88,10 @@ function createLibH(libraryName, className) {
 #ifndef _JERRYSCRIPT_MBED_LIB_${upper}_H
 #define _JERRYSCRIPT_MBED_LIB_${upper}_H
 
-// @todo: add a reference to the ${className} header here
-
 #include "mbed-js-${libraryName}/mbed-js-${libraryName}.h"
 #include "jerryscript-mbed-library-registry/wrap_tools.h"
 
 void mbed_js_${libraryName}_setup();
-static jerry_value_t mbed_js_wrap_native_object(${className}* ptr);
 
 DECLARE_JS_WRAPPER_REGISTRATION (${libraryName})
 {
@@ -108,7 +108,7 @@ function createCpp(libraryName, code, enums) {
         let values = enums[name];
 
         let decl = values.map(v => {
-            return `jerry_set_property(enum_obj, jerry_create_string((const jerry_char_t*)"${v}"), jerry_create_number((double) ${v});`
+            return `jerry_set_property(enum_obj, jerry_create_string((const jerry_char_t*)"${v}"), jerry_create_number((double) ${v}));`
         }).map(v => '        ' + v).join('\n');
 
         let text = `
@@ -121,7 +121,7 @@ function createCpp(libraryName, code, enums) {
 ${decl}
 
         jerry_value_t global_obj = jerry_get_global_object();
-        jerry_set_property(global_obj, jerry_create_string((const jerry_char_t*)"${name}", enum_obj);
+        jerry_set_property(global_obj, jerry_create_string((const jerry_char_t*)"${name}"), enum_obj);
     }`;
 
         return text;
@@ -150,14 +150,14 @@ return `{
     "includes": [
         "mbed-js-${libraryName}/mbed-js-${libraryName}-lib.h"
 	],
-    "name": "mbed-js-${libraryName}"
+    "name": "${libraryName}"
 }
 `;
 }
 
 function createPackageJson(libraryName, className) {
 return `{
-    "name": "${libraryName}",
+    "name": "mbed-js-${libraryName}",
     "version": "1.0.0"
 }
 `;
