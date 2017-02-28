@@ -4,7 +4,10 @@ function getCppType(type) {
         case 'typedef':
         case 'enumeration_type':
         case 'class_type':
+        case 'structure_type':
             return type.name;
+        case 'reference_type':
+            return getCppType(type.type);
         case 'pointer_type':
             if (type.type && type.type.tag === 'const_type') {
                 if (type.type.type) {
@@ -20,13 +23,15 @@ function getCppType(type) {
             }
 
             return type.type.name + '*';
+        case 'typedef':
+            return getCppType(type.type);
         default:
             console.warn('Unknown tag', type.tag, type);
             break;
     }
 }
 
-function createMemberFunction(obj, fn, params, typeCheckString, castString, argString) {
+function createMemberFunction(obj, jsClassName, fn, params, typeCheckString, castString, argString) {
     let returnValues = [];
 
     if (!fn.type) { /* no return value */
@@ -102,10 +107,10 @@ function createMemberFunction(obj, fn, params, typeCheckString, castString, argS
     let returnString = returnValues.map(a => '    ' + a).join('\n');
 
     let out = `/**
- * ${obj.name}#${fn.name} (native JavaScript method)
+ * ${jsClassName}#${fn.name} (native JavaScript method)
  */
-DECLARE_CLASS_FUNCTION(${obj.name}, ${fn.name}) {
-    CHECK_ARGUMENT_COUNT(${obj.name}, ${fn.name}, (args_count == ${params.length - 1}));
+DECLARE_CLASS_FUNCTION(${jsClassName}, ${fn.name}) {
+    CHECK_ARGUMENT_COUNT(${jsClassName}, ${fn.name}, (args_count == ${params.length - 1}));
 ${typeCheckString}
 
     uintptr_t ptr_val;
@@ -120,21 +125,21 @@ ${returnString}
     return out;
 }
 
-function createConstructor(obj, fn, params, typeCheckString, castString, argString, allFns) {
+function createConstructor(obj, jsClassName, fn, params, typeCheckString, castString, argString, allFns) {
 
     let fnString = allFns.filter(f => {
         return isMemberFunction(obj, f);
     }).map(p => {
-        return `    ATTACH_CLASS_FUNCTION(js_object, ${obj.name}, ${p.name});`;
+        return `    ATTACH_CLASS_FUNCTION(js_object, ${jsClassName}, ${p.name});`;
     }).join('\n');
 
     let out = `
 /**
- * ${obj.name}#destructor
+ * ${jsClassName}#destructor
  *
- * Called if/when the ${obj.name} is GC'ed.
+ * Called if/when the ${jsClassName} is GC'ed.
  */
-void NAME_FOR_CLASS_NATIVE_DESTRUCTOR(${obj.name})(const uintptr_t native_handle) {
+void NAME_FOR_CLASS_NATIVE_DESTRUCTOR(${jsClassName})(const uintptr_t native_handle) {
     delete reinterpret_cast<${obj.name}*>(native_handle);
 }
 
@@ -145,7 +150,7 @@ jerry_value_t mbed_js_wrap_native_object(${obj.name}* ptr) {
     uintptr_t native_ptr = (uintptr_t) ptr;
 
     jerry_value_t js_object = jerry_create_object();
-    jerry_set_object_native_handle(js_object, native_ptr, NAME_FOR_CLASS_NATIVE_DESTRUCTOR(${obj.name}));
+    jerry_set_object_native_handle(js_object, native_ptr, NAME_FOR_CLASS_NATIVE_DESTRUCTOR(${jsClassName}));
 
 ${fnString}
 
@@ -153,10 +158,10 @@ ${fnString}
 }
 
 /**
- * ${obj.name} (native JavaScript constructor)
+ * ${jsClassName} (native JavaScript constructor)
  */
-DECLARE_CLASS_CONSTRUCTOR(${obj.name}) {
-    CHECK_ARGUMENT_COUNT(${obj.name}, __constructor, (args_count == ${params.length - 1}));
+DECLARE_CLASS_CONSTRUCTOR(${jsClassName}) {
+    CHECK_ARGUMENT_COUNT(${jsClassName}, __constructor, (args_count == ${params.length - 1}));
 ${typeCheckString}
 
 ${castString}
@@ -185,15 +190,17 @@ function isMemberFunction(obj, fn) {
 }
 
 function isConstructor(obj, fn) {
-    return obj.name === fn.name && fn.type.tag === 'pointer_type' && fn.type.type === obj;
+    // Templates
+    let objName = obj.name;
+    if (objName.indexOf('<') > -1) {
+        objName = objName.split('<')[0];
+    }
+
+    return objName === fn.name && fn.type.tag === 'pointer_type' && fn.type.type === obj;
 }
 
-function fnToString(obj, fn, allFns) {
+function fnToString(obj, jsClassName, fn, allFns) {
     console.log(obj.name + '#' + fn.name);
-
-    if (fn.name === 'setColorRGB') {
-        debugger;
-    }
 
     var isCtor = false;
 
@@ -226,9 +233,15 @@ function fnToString(obj, fn, allFns) {
                 case 'float':
                 case 'int':
                 case 'unsigned int':
-                    checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ALWAYS(${obj.name}, ${fn.name}, ${ix-1}, number);`);
+                case 'long unsigned int':
+                case 'short unsigned int':
+                    checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, number, (args_count == ${params.length - 1}));`);
                     casting.push(`double jArg${ix-1} = jerry_get_number_value(args[${ix-1}]);`);
                     casting.push(`${cppType} arg${ix-1} = static_cast<${cppType}>(jArg${ix-1});`);
+                    break;
+                case 'bool':
+                    checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, boolean, (args_count == ${params.length - 1}));`);
+                    casting.push(`bool arg${ix-1} = jerry_get_boolean_value(args[${ix-1}]);`);
                     break;
                 default:
                     console.warn('Unknown fnparam base_type', type.name, type);
@@ -237,7 +250,7 @@ function fnToString(obj, fn, allFns) {
         }
 
         function handleEnumerationType(type) {
-            checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ALWAYS(${obj.name}, ${fn.name}, ${ix-1}, number);`);
+            checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, number, (args_count == ${params.length - 1}));`);
             casting.push(`${cppType} arg${ix-1} = ${cppType}(jerry_get_number_value(args[${ix-1}]));`);
 
             // Prevent PinNames from showing up here...
@@ -251,7 +264,7 @@ function fnToString(obj, fn, allFns) {
 
         function handleClassType(type) {
             if (type.name.indexOf('basic_string') === 0) {
-                checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ALWAYS(${obj.name}, ${fn.name}, ${ix-1}, string);`);
+                checkArgumentTypes.push(`CHECK_ARGUMENT_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, string, (args_count == ${params.length - 1}));`);
 
                 casting.push(`jerry_size_t szArg${ix-1} = jerry_get_string_size(args[${ix-1}]);`);
                 casting.push(`jerry_char_t *sArg${ix-1} = (jerry_char_t*) calloc(szArg${ix-1} + 1, sizeof(jerry_char_t));`);
@@ -259,7 +272,11 @@ function fnToString(obj, fn, allFns) {
                 casting.push(`string arg${ix-1}((const char*) sArg${ix-1});`);
             }
             else {
-                console.warn('Unknown class type', type.name, type);
+                checkArgumentTypes.push(`CHECK_ARGUMENT_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, object, (args_count == ${params.length - 1}));`);
+
+                casting.push(`uintptr_t arg${ix-1}_native_handle;`);
+                casting.push(`jerry_get_object_native_handle(args[${ix-1}], &arg${ix-1}_native_handle);`);
+                casting.push(`${cppType} arg${ix-1} = *((${cppType}*)arg${ix-1}_native_handle);`);
             }
         }
 
@@ -270,7 +287,7 @@ function fnToString(obj, fn, allFns) {
             else if (type.tag === 'base_type') {
                 handleBaseType(type);
             }
-            else if (type.tag === 'class_type') {
+            else if (type.tag === 'class_type' || type.tag === 'structure_type') {
                 handleClassType(type);
             }
             else if (type.tag === 'typedef') {
@@ -284,7 +301,24 @@ function fnToString(obj, fn, allFns) {
             }
             else {
                 console.warn('Unknown fnparam typedef', type.tag, type);
-                return;
+            }
+        }
+
+        function handlePointerType(type) {
+            if (cppType === 'const char*') {
+                checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, string, (args_count == ${params.length - 1}));`);
+
+                casting.push(`jerry_size_t szArg${ix-1} = jerry_get_string_size(args[${ix-1}]);`);
+                casting.push(`jerry_char_t *sArg${ix-1} = (jerry_char_t*) calloc(szArg${ix-1} + 1, sizeof(jerry_char_t));`);
+                casting.push(`jerry_string_to_char_buffer(args[${ix-1}], sArg${ix-1}, szArg${ix-1});`);
+                casting.push(`${cppType} arg${ix-1} = (${cppType}) sArg${ix-1};`);
+            }
+            else {
+                checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, object, (args_count == ${params.length - 1}));`);
+
+                casting.push(`uintptr_t arg${ix-1}_native_handle;`);
+                casting.push(`jerry_get_object_native_handle(args[${ix-1}], &arg${ix-1}_native_handle);`);
+                casting.push(`${cppType} arg${ix-1} = (${cppType})arg${ix-1}_native_handle;`);
             }
         }
 
@@ -293,26 +327,30 @@ function fnToString(obj, fn, allFns) {
                 handleBaseType(p.type);
                 break;
             case 'class_type':
+            case 'structure_type':
                 handleClassType(p.type);
                 break;
             case 'typedef':
                 handleTypedef(p.type.type);
                 break;
             case 'pointer_type':
-                if (cppType === 'const char*') {
-                    checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ALWAYS(${obj.name}, ${fn.name}, ${ix-1}, string);`);
-
-                    casting.push(`jerry_size_t szArg${ix-1} = jerry_get_string_size(args[${ix-1}]);`);
-                    casting.push(`jerry_char_t *sArg${ix-1} = (jerry_char_t*) calloc(szArg${ix-1} + 1, sizeof(jerry_char_t));`);
-                    casting.push(`jerry_string_to_char_buffer(args[${ix-1}], sArg${ix-1}, szArg${ix-1});`);
-                    casting.push(`${cppType} arg${ix-1} = (${cppType}) sArg${ix-1};`);
+                handlePointerType(p.type);
+                break;
+            case 'reference_type':
+                if (p.type.type.tag === 'class_type' || p.type.type.tag === 'structure_type') {
+                    handleClassType(p.type.type);
+                }
+                else if (p.type.type.tag === 'typedef') {
+                    if (p.type.type.name && !p.type.type.type.name) {
+                        p.type.type.type.name = p.type.type.name;
+                    }
+                    handleTypedef(p.type.type);
+                }
+                else if (p.type.type.tag === 'base_type') {
+                    handleBaseType(p.type.type);
                 }
                 else {
-                    checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ALWAYS(${obj.name}, ${fn.name}, ${ix-1}, object);`);
-
-                    casting.push(`uintptr_t arg${ix-1}_native_handle;`);
-                    casting.push(`jerry_get_object_native_handle(args[${ix-1}], &arg${ix-1}_native_handle);`);
-                    casting.push(`${cppType} arg${ix-1} = (${cppType})arg${ix-1}_native_handle;`);
+                    console.warn('Unknown fnparam reference_type', p.type.type.tag, p.type);
                 }
                 break;
             case 'enumeration_type':
@@ -328,10 +366,8 @@ function fnToString(obj, fn, allFns) {
     let castString = casting.map(a => '    ' + a).join('\n');
     let argString = Array.apply(null, { length: params.length - 1 }).map((v, ix) => 'arg' + ix).join(', ');
 
-    // @todo: actually do something with these...
-
     if (!isCtor) {
-        let text = createMemberFunction(obj, fn, params, typeCheckString, castString, argString);
+        let text = createMemberFunction(obj, jsClassName, fn, params, typeCheckString, castString, argString);
         return {
             text: text,
             enums: enums
@@ -339,7 +375,7 @@ function fnToString(obj, fn, allFns) {
     }
     else {
         fn.name = obj.name; // restore state
-        let text = createConstructor(obj, fn, params, typeCheckString, castString, argString, allFns);
+        let text = createConstructor(obj, jsClassName, fn, params, typeCheckString, castString, argString, allFns);
         return {
             text: text,
             enums: enums

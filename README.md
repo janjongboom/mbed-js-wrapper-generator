@@ -56,7 +56,7 @@ This instructions only work for projects that build via Gulp. See [mbed-js-examp
 * C++ APIs often look different than a JS API, passing in a pointer and the number of elements. This requires manual work.
 * Higher-level APIs work better than lower-level APIs. F.e. on C++ level use a `string` rather than a `char*`. Same goes for arrays.
 * If you want to have a function in JavaScript that then returns another object (rather than a primitive):
-    1. Create wrappers for both objects.
+    1. Create wrappers for both objects (with `--library-name samelibname` parameter).
     1. Make a shared `.lib` file (rather than 2 separate ones) where you declare both objects.
     1. Include the `mbed-js-childname.h` header in your parent implementation (to expose the `mbed_js_wrap_native_object` function).
     1. Probably remove the ctor for the child, unless you want JS users to be able to construct their own versions.
@@ -72,12 +72,17 @@ This instructions only work for projects that build via Gulp. See [mbed-js-examp
     ```js
     http_method.HTTP_GET
     ```
+* Templated functions require the `--js-class-name` parameter to be set.
+
+    ```
+    $ node generate.js mqtt-symbols.txt "Client<MQTTNetwork, Countdown, 100, 5>" --js-class-name MqqtClient
+    ```
 
 ## Todo
 
 * `Callback<>` types. There is `mbed::js::EventLoop::getInstance().wrapFunction`, but it does not handle arguments.
 * vector / array types.
-* Optional parameters.
+* Optional parameters / function overloads.
 * C++ APIs are often synchronous. Should have an easy method to make them async (by waiting on an RTOS thread).
 * A whole bunch of primitives are not implemented yet.
 
