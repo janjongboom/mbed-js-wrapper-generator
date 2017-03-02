@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Path = require('path');
-const objdumpParser = require('./wrapper-generator/objdump-parser');
+const objdumpParser = require('arm-objdump-parser');
 const fnToWrapper = require('./wrapper-generator/function-to-wrapper');
 
 let symbolsFile = process.argv[2];
@@ -32,7 +32,7 @@ if (!symbolsFile || !className) {
 let symbols = fs.readFileSync(symbolsFile, 'utf-8');
 let tree = objdumpParser(symbols);
 
-let obj = tree.findClassByName(className);
+let obj = tree.nodes.find(c => c.tag === 'class_type' && c.name === className);
 if (!obj) {
     console.error(`Could not find object '${className}'. Are you sure it's linked in?`);
     process.exit(1);
@@ -53,7 +53,7 @@ fs.writeFileSync(Path.join(folder, 'mbed-js-' + libraryName, 'mbed-js-' + jsClas
 fs.writeFileSync(Path.join(folder, 'mbed-js-' + libraryName, 'mbed-js-' + libraryName + '-lib.h'), createLibH(libraryName, className, jsClassName), 'utf-8');
 
 // Now we can do interesting stuff...
-let fns = tree.getPublicFunctionsFromClass(obj);
+let fns = obj.children.filter(c => c.tag === 'subprogram' && c.accessibility === '1\t(public)');
 
 let members = fns.filter(fn => !fnToWrapper.isConstructor(obj, fn))
     .map(fn => fnToWrapper.fnToString(obj, jsClassName, fn, fns))

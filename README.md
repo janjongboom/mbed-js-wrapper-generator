@@ -23,6 +23,7 @@ Generates C++/JS wrappers for JavaScript on mbed. This makes it easy to consume 
 1. Run this tool to generate the wrapper (where ClassName is the name of the object you want to wrap):
 
     ```
+    $ npm install
     $ node generate.js symbols.txt ClassName
     ```
 

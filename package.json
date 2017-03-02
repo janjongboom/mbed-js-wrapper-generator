@@ -1,0 +1,27 @@
+{
+  "name": "mbed-js-wrapper-generator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Takes C++ objects and generates JerryScript wrappers",
+  "main": "generate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janjongboom/mbed-js-wrapper-generator.git"
+  },
+  "keywords": [
+    "mbed",
+    "jerryscript"
+  ],
+  "author": "Jan Jongboom <jan.jongboom@arm.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/janjongboom/mbed-js-wrapper-generator/issues"
+  },
+  "homepage": "https://github.com/janjongboom/mbed-js-wrapper-generator#readme",
+  "dependencies": {
+    "arm-objdump-parser": "^1.0.0"
+  }
+}
