@@ -52,6 +52,7 @@ function createMemberFunction(obj, jsClassName, fn, params, typeCheckString, cas
                 case 'float':
                 case 'int':
                 case 'unsigned int':
+                case 'long unsigned int':
                 case 'signed char':
                 case 'unsigned char':
                 case 'long':
@@ -197,6 +198,12 @@ function isMemberFunction(obj, fn) {
     // destructor
     if (fn.name === '~' + obj.name) return false;
 
+    // copy
+    if (fn.name === obj.name && params.length === 2 && params[1].type.tag === 'reference_type' && params[1].type.type.tag === 'const_type' && params[1].type.type.type === obj) {
+        return false;
+    }
+
+
     return true;
 }
 
@@ -205,6 +212,17 @@ function isConstructor(obj, fn) {
     let objName = obj.name;
     if (objName.indexOf('<') > -1) {
         objName = objName.split('<')[0];
+    }
+
+    let params = fn.children.filter(c => c.tag === 'formal_parameter');
+
+    if (fn.name === obj.name) {
+        debugger;
+    }
+
+    // copy
+    if (fn.name === obj.name && params.length === 2 && params[1].type.tag === 'reference_type' && params[1].type.type.tag === 'const_type' && params[1].type.type.type === obj) {
+        return false;
     }
 
     return objName === fn.name && fn.type.tag === 'pointer_type' && fn.type.type === obj;

@@ -32,7 +32,10 @@ if (!symbolsFile || !className) {
 let symbols = fs.readFileSync(symbolsFile, 'utf-8');
 let tree = objdumpParser(symbols);
 
-let obj = tree.nodes.find(c => c.tag === 'class_type' && c.name === className);
+let obj = tree.nodes.filter(c => c.tag === 'class_type' && c.name === className);
+// find the one with most children...
+obj.sort((a, b) => b.children.length - a.children.length);
+obj = obj[0];
 if (!obj) {
     console.error(`Could not find object '${className}'. Are you sure it's linked in?`);
     process.exit(1);
