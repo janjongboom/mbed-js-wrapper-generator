@@ -297,7 +297,7 @@ function fnToString(obj, jsClassName, fn, allFns) {
 
         function handleClassType(type) {
             if (type.name.indexOf('basic_string') === 0) {
-                checkArgumentTypes.push(`CHECK_ARGUMENT_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, string, (args_count == ${params.length - 1}));`);
+                checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, string, (args_count == ${params.length - 1}));`);
 
                 casting.push(`jerry_size_t szArg${ix-1} = jerry_get_string_size(args[${ix-1}]);`);
                 casting.push(`jerry_char_t *sArg${ix-1} = (jerry_char_t*) calloc(szArg${ix-1} + 1, sizeof(jerry_char_t));`);
@@ -305,7 +305,7 @@ function fnToString(obj, jsClassName, fn, allFns) {
                 casting.push(`string arg${ix-1}((const char*) sArg${ix-1});`);
             }
             else {
-                checkArgumentTypes.push(`CHECK_ARGUMENT_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, object, (args_count == ${params.length - 1}));`);
+                checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, object, (args_count == ${params.length - 1}));`);
 
                 casting.push(`uintptr_t arg${ix-1}_native_handle;`);
                 casting.push(`jerry_get_object_native_handle(args[${ix-1}], &arg${ix-1}_native_handle);`);
