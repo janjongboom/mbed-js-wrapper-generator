@@ -52,6 +52,10 @@ function createMemberFunction(obj, jsClassName, fn, params, typeCheckString, cas
                 case 'float':
                 case 'int':
                 case 'unsigned int':
+                case 'signed char':
+                case 'unsigned char':
+                case 'long':
+                case 'short':
                     returnValues.push(`return jerry_create_number(result);`);
                     break;
                 case 'bool':
@@ -61,7 +65,7 @@ function createMemberFunction(obj, jsClassName, fn, params, typeCheckString, cas
                     returnValues.push(`return jerry_create_string((const jerry_char_t*) result.c_str());`);
                     break;
                 default:
-                    console.warn('Unknown return base_type', fn.type.name, fn.type);
+                    console.warn('Unknown return base_type', type.name, type);
                     return;
             }
         }
@@ -69,6 +73,24 @@ function createMemberFunction(obj, jsClassName, fn, params, typeCheckString, cas
         function handlePointerType(type) {
             returnValues.push(`if (result == NULL) return jerry_create_undefined();`);
             returnValues.push(`return mbed_js_wrap_native_object(result);`);
+        }
+
+        function handleTypedef(type) {
+            if (type.type.tag === 'base_type') {
+                handleBaseType(type.type);
+            }
+            else if (type.type.tag === 'pointer_type') {
+                handlePointerType(type.type);
+            }
+            else if (type.name === 'string') {
+                handleBaseType({ name: 'string' });
+            }
+            else if (type.type.tag === 'typedef') {
+                handleTypedef(type.type);
+            }
+            else {
+                console.warn('Unknown return typedef', type.type.name, type);
+            }
         }
 
         switch (fn.type.tag) {
@@ -79,18 +101,7 @@ function createMemberFunction(obj, jsClassName, fn, params, typeCheckString, cas
                 handlePointerType(fn.type);
                 break;
             case 'typedef':
-                if (fn.type.type.tag === 'base_type') {
-                    handleBaseType(fn.type.type);
-                }
-                else if (fn.type.type.tag === 'pointer_type') {
-                    handlePointerType(fn.type.type);
-                }
-                else if (fn.type.name === 'string') {
-                    handleBaseType({ name: 'string' });
-                }
-                else {
-                    console.warn('Unknown return typedef', fn.type.type.name, fn.type);
-                }
+                handleTypedef(fn.type);
                 break;
             default:
                 console.warn('Unknown return tag', fn.type.tag, fn.type);
@@ -233,6 +244,10 @@ function fnToString(obj, jsClassName, fn, allFns) {
                 case 'float':
                 case 'int':
                 case 'unsigned int':
+                case 'signed char':
+                case 'unsigned char':
+                case 'long':
+                case 'short':
                 case 'long unsigned int':
                 case 'short unsigned int':
                     checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, number, (args_count == ${params.length - 1}));`);
