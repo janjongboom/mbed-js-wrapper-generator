@@ -180,7 +180,10 @@ return `{
 function createPackageJson(libraryName, className, jsClassName) {
 return `{
     "name": "mbed-js-${libraryName}",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "scripts": {
+        "postinstall": "echo 'ROOT=.' > .mbed && mbed deploy"
+    }
 }
 `;
 }
