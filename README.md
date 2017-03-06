@@ -20,32 +20,19 @@ Generates C++/JS wrappers for JavaScript on mbed. This makes it easy to consume 
     $ arm-none-eabi-objdump -Wi -g *.elf > symbols.txt
     ```
 
-1. Run this tool to generate the wrapper (where ClassName is the name of the object you want to wrap):
+1. Run this tool to generate the wrapper - where ClassName is the name of the object you want to wrap, and HeaderFile is the `.h` file of the native library:
 
     ```
     $ npm install
-    $ node generate.js symbols.txt ClassName
+    $ node generate.js symbols.txt ClassName --header-file NativeHeaderFile.h
     ```
 
 ## How to use a wrapper
 
 This instructions only work for projects that build via Gulp. See [mbed-js-example](https://github.com/ARMmbed/mbed-js-example).
 
-1. Copy the folder with the wrapper to your mbed-js project.
-1. Create a symlink into the node_modules folder, via:
-
-    ```
-    $ ln -s $PWD/mbed-js-classname node_modules/mbed-js-classname
-    ```
-
-1. In the package.json of your mbed-js project, add the library to the `dependencies` list:
-
-    ```
-    "dependencies": {
-        "mbed-js-classname": "~1.0.0"
-    },
-    ```
-
+1. In the wrapper directory: add the native library via `mbed add http://path/to/lib`.
+1. In your mbed-js project, run `npm install PATH_TO_WRAPPER --save --ignore-scripts`.
 1. Compile the project with Gulp.
 
     ```
@@ -83,7 +70,6 @@ This instructions only work for projects that build via Gulp. See [mbed-js-examp
 
 * `Callback<>` types. There is `mbed::js::EventLoop::getInstance().wrapFunction`, but it does not handle arguments.
 * vector / array types.
-* Optional parameters / function overloads.
 * C++ APIs are often synchronous. Should have an easy method to make them async (by waiting on an RTOS thread).
 * A whole bunch of primitives are not implemented yet.
 

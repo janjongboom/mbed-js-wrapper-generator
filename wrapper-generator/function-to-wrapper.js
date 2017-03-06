@@ -57,6 +57,7 @@ function createMemberFunction(obj, jsClassName, fn, params, typeCheckString, cas
                 case 'unsigned char':
                 case 'long':
                 case 'short':
+                case 'short int':
                     returnValues.push(`return jerry_create_number(result);`);
                     break;
                 case 'bool':
@@ -118,12 +119,7 @@ function createMemberFunction(obj, jsClassName, fn, params, typeCheckString, cas
 
     let returnString = returnValues.map(a => '    ' + a).join('\n');
 
-    let out = `/**
- * ${jsClassName}#${fn.name} (native JavaScript method)
- */
-DECLARE_CLASS_FUNCTION(${jsClassName}, ${fn.name}) {
-    CHECK_ARGUMENT_COUNT(${jsClassName}, ${fn.name}, (args_count == ${params.length - 1}));
-${typeCheckString}
+    let out = `${typeCheckString}
 
     uintptr_t ptr_val;
     jerry_get_object_native_handle(this_obj, &ptr_val);
@@ -132,29 +128,33 @@ ${typeCheckString}
 
 ${castString}
 
-${returnString}
-}`;
+${returnString}`;
     return out;
 }
 
-function createConstructor(obj, jsClassName, fn, params, typeCheckString, castString, argString, allFns) {
-
-    let fnString = allFns.filter(f => {
-        return isMemberFunction(obj, f);
-    }).map(p => {
-        return `    ATTACH_CLASS_FUNCTION(js_object, ${jsClassName}, ${p.name});`;
-    }).join('\n');
-
-    let out = `
-/**
+function createDestructor(obj, jsClassName) {
+    return `/**
  * ${jsClassName}#destructor
  *
  * Called if/when the ${jsClassName} is GC'ed.
  */
 void NAME_FOR_CLASS_NATIVE_DESTRUCTOR(${jsClassName})(const uintptr_t native_handle) {
     delete reinterpret_cast<${obj.name}*>(native_handle);
+}`;
 }
 
+function createNativeWrapper(obj, jsClassName, allFns) {
+    let added = [];
+
+    let fnString = allFns.filter(f => {
+        return isMemberFunction(obj, f);
+    }).map(p => {
+        if (added.indexOf(p.name) !== -1) return null;
+        added.push(p.name);
+        return `    ATTACH_CLASS_FUNCTION(js_object, ${jsClassName}, ${p.name});`;
+    }).filter(f => !!f).join('\n');
+
+    let out = `
 /**
  * mbed_js_wrap_native_object (turns a native ${obj.name} object into a JS object)
  */
@@ -167,22 +167,20 @@ jerry_value_t mbed_js_wrap_native_object(${obj.name}* ptr) {
 ${fnString}
 
     return js_object;
+}`;
+
+    return out;
 }
 
-/**
- * ${jsClassName} (native JavaScript constructor)
- */
-DECLARE_CLASS_CONSTRUCTOR(${jsClassName}) {
-    CHECK_ARGUMENT_COUNT(${jsClassName}, __constructor, (args_count == ${params.length - 1}));
-${typeCheckString}
+function createConstructor(obj, jsClassName, fn, params, typeCheckString, castString, argString, allFns) {
+    return `${typeCheckString}
 
 ${castString}
 
     // Create the native object
     ${obj.name}* native_obj = new ${obj.name}(${argString});
 
-    return mbed_js_wrap_native_object(native_obj);
-}`;
+    return mbed_js_wrap_native_object(native_obj);`;
 
     return out;
 }
@@ -266,6 +264,7 @@ function fnToString(obj, jsClassName, fn, allFns) {
                 case 'unsigned char':
                 case 'long':
                 case 'short':
+                case 'short int':
                 case 'long unsigned int':
                 case 'short unsigned int':
                     checkArgumentTypes.push(`CHECK_ARGUMENT_TYPE_ON_CONDITION(${jsClassName}, ${fn.name}, ${ix-1}, number, (args_count == ${params.length - 1}));`);
@@ -399,24 +398,28 @@ function fnToString(obj, jsClassName, fn, allFns) {
     let castString = casting.map(a => '    ' + a).join('\n');
     let argString = Array.apply(null, { length: params.length - 1 }).map((v, ix) => 'arg' + ix).join(', ');
 
+    let text;
+
     if (!isCtor) {
-        let text = createMemberFunction(obj, jsClassName, fn, params, typeCheckString, castString, argString);
-        return {
-            text: text,
-            enums: enums
-        }
+        text = createMemberFunction(obj, jsClassName, fn, params, typeCheckString, castString, argString);
     }
     else {
         fn.name = obj.name; // restore state
-        let text = createConstructor(obj, jsClassName, fn, params, typeCheckString, castString, argString, allFns);
-        return {
-            text: text,
-            enums: enums
-        };
+
+        text = createConstructor(obj, jsClassName, fn, params, typeCheckString, castString, argString, allFns);
     }
+
+    return {
+        isConstructor: isCtor,
+        name: isCtor ? 'ctor' : fn.name,
+        argsLength: params.length - 1,
+        body: text
+    };
 };
 
 module.exports = {
     fnToString: fnToString,
+    createDestructor: createDestructor,
+    createNativeWrapper: createNativeWrapper,
     isConstructor: isConstructor
 };

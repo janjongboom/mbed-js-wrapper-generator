@@ -1,5 +1,5 @@
 .vscode/
-output/jerryscript*
+output/
 arm-objdump-explorer/
 node_modules/
-
+symbols/
