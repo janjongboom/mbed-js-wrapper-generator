@@ -58,6 +58,7 @@ function createMemberFunction(obj, jsClassName, fn, params, typeCheckString, cas
                 case 'long':
                 case 'short':
                 case 'short int':
+                case 'short unsigned int':
                     returnValues.push(`return jerry_create_number(result);`);
                     break;
                 case 'bool':
